@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Express Testing</title>
+
+	<link rel="stylesheet" type="text/css" href="css/main.css">
+
+</head>
+<body>
+
+	<h1>List</h1>
+
+	<ul class="list">
+
+		<li>
+			
+				<input id="box" style="width: 70%; color: #444;" type="text" name="item">
+				<div id="submit" style="padding: 1px; float: right; background-color: #333; border: 3px solid #222; border-radius: 5px;">Submit</div>
+
+		</li>
+
+		<% for (var i = 0; i < list.length; i++) { %>
+			<li id="<%= i %>"><%= list[i] %><div class="remove">X</div></li>
+		<% } %>
+	</ul>
+
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+	<script type="text/javascript">
+		
+		$(document).ready(function() {
+
+			$('#submit').on('click', function() {
+				
+				var val = $('#box').val();
+
+				var isValid = true;
+
+				if (val == '' || val == ' ')
+					isValid = false;
+
+				if (val.includes("<") || val.includes(">"))
+					isValid = false;
+
+				if (isValid) {
+					$.post('/', { 
+						content: val, 
+						success: function() {
+							location.reload(); 
+						}
+					});
+				} else {
+					alert("Input not valid!");
+				}
+
+			});
+
+			$('.remove').on('click', function() {
+
+				var li = $(this).parent();
+				var index = $(li).attr('id');
+
+				$.ajax({
+					url: '/',
+					type: 'DELETE',
+					data: { 'index': index },
+					success: function() {
+						location.reload();
+					},
+					error: function() {
+						alert("Failed to delete item!");
+					}
+				});
+
+			});
+
+		});
+
+	</script>
+
+</body>
+</html>
